@@ -79,6 +79,7 @@ public class UserHelper
             Course = user.Course,
             YearOfAdmission = user.YearOfAdmission,
             Color = ColorGenerator.GenerateColor(),
+            CreatedAt = DateTime.Today,
             Type = UserType.Student,
             IsActive = false,
             IsVerify = false
