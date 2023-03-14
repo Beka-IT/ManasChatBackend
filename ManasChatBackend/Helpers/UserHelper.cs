@@ -2,12 +2,14 @@
 using System.Text.RegularExpressions;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using ManasChatBackend.Enums;
 using ManasChatBackend.Helpers;
 using ManasChatBackend.Models;
 using ManasChatBackend.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using MimeKit.Text;
+using Server.Helpers;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace WebApi.Managers;
@@ -32,7 +34,7 @@ public class UserHelper
 
         return false;
     }
-    
+
     public async Task<UserSignUpResponse> CreateUser(UserSignUpRequest user)
     {
         Regex regex = new Regex(@"^([\w\.\-]+)@manas.edu.kg");
@@ -77,6 +79,7 @@ public class UserHelper
             Course = user.Course,
             YearOfAdmission = user.YearOfAdmission,
             Color = ColorGenerator.GenerateColor(),
+            Type = UserType.Student,
             IsActive = false,
             IsVerify = false
         };
@@ -93,7 +96,6 @@ public class UserHelper
             User = newAccount,
             message = "Вы успешно зарегистрировались!"
         };
-        
     }
 
     public void VerifyUserByEmail(string email)
@@ -105,8 +107,13 @@ public class UserHelper
         _db.SaveChanges();
     }
     
-    public void ActivateUserByEmail(string email)
+    public void ActivateUserByEmail(string email, string executorEmail)
     {
+        var executor = _db.Users.FirstOrDefault(e => e.Email == executorEmail);
+        if (executor?.Type != UserType.Manager)
+        {
+            throw new AppException("Permission denied!");
+        }
         var user = _db.Users.FirstOrDefault(u => u.Email == email);
         user.IsActive = true;
         _db.SaveChanges();

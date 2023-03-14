@@ -5,9 +5,9 @@ namespace ManasChatBackend.Services;
 
 public interface IUserService
 {
-    User SignIn(string email, string password);
+    Task<bool> IsValidSignIn(string email, string password);
 
     Task<UserSignUpResponse> SignUp(UserSignUpRequest user);
-
+    void ActivateUser(string email, string executorEmail);
     bool ConfirmCode(int code, string email);
 }

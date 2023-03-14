@@ -1,4 +1,6 @@
-﻿namespace ManasChatBackend.Models;
+﻿using ManasChatBackend.Enums;
+
+namespace ManasChatBackend.Models;
 
 public class User
 {
@@ -10,6 +12,7 @@ public class User
     public int? FacultyId { get; set; }
     public int? DepartmentId { get; set; }
     public int? Course { get; set; }
+    public UserType Type { get; set; }
     public int? YearOfAdmission { get; set; }
     public bool IsVerify { get; set; }
     public bool IsActive { get; set; }
