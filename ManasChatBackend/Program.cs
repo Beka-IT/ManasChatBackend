@@ -1,4 +1,7 @@
+using ManasChatBackend.Services;
 using Microsoft.EntityFrameworkCore;
+using Server.Helpers;
+using WebApi.Managers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContextPool<AppDbContext>(
     options => options.UseSqlite(connectionString));
 builder.Services.AddControllers();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<UserHelper>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -20,6 +25,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
